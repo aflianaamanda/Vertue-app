@@ -1,0 +1,5 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/ctx_copy" android:title="Salin nomor pesanan" />
+    <item android:id="@+id/ctx_share" android:title="Bagikan ringkasan" />
+    <item android:id="@+id/ctx_cancel" android:title="Batalkan pesanan" />
+</menu>

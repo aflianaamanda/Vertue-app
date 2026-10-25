@@ -1,0 +1,15 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:descendantFocusability="blocksDescendants" android:paddingBottom="6dp" android:paddingEnd="16dp" android:paddingStart="16dp" android:paddingTop="6dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_card" android:orientation="vertical" android:padding="16dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:id="@+id/tvId" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="@color/muted" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/tvStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingBottom="3dp" android:paddingEnd="10dp" android:paddingStart="10dp" android:paddingTop="3dp" android:textSize="11sp" android:textStyle="bold" />
+            <ImageButton android:id="@+id/btnMore" android:layout_width="36dp" android:layout_height="36dp" android:background="@android:color/transparent" android:contentDescription="Menu" android:src="@drawable/ic_more" />
+        </LinearLayout>
+        <TextView android:id="@+id/tvTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:textColor="@color/ink" android:textSize="15sp" android:textStyle="bold" />
+        <TextView android:id="@+id/tvSub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" />
+        <ProgressBar android:id="@+id/pb" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:layout_marginTop="10dp" android:max="100" android:progressBackgroundTint="@color/gold_soft" android:progressTint="@color/gold" />
+        <TextView android:id="@+id/tvStep" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textColor="@color/muted" android:textSize="12sp" />
+        <Button android:id="@+id/btnPay" style="@style/Btn.Gold" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" />
+        <TextView android:id="@+id/tvInvoice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Lihat invoice →" android:textColor="@color/navy" android:textSize="12sp" android:textStyle="bold" />
+    </LinearLayout>
+</FrameLayout>

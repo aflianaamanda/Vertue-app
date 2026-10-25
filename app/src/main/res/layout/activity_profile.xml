@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+    <include layout="@layout/view_header" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_card" android:gravity="center_horizontal" android:orientation="vertical" android:padding="20dp">
+                <TextView android:id="@+id/tvAvatar" android:layout_width="72dp" android:layout_height="72dp" android:background="@drawable/bg_navy_card" android:gravity="center" android:textColor="@color/gold" android:textSize="28sp" android:textStyle="bold" />
+                <TextView android:id="@+id/tvPName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:textColor="@color/ink" android:textSize="18sp" android:textStyle="bold" />
+                <TextView android:id="@+id/tvPPhone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="13sp" />
+                <TextView android:id="@+id/tvPAddr" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" />
+            </LinearLayout>
+            <Switch android:id="@+id/swNotif" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/bg_card" android:padding="16dp" android:text="Notifikasi pesanan" android:textColor="@color/ink" android:textSize="14sp" />
+            <Button android:id="@+id/btnHelp" style="@style/Btn.Outline" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Bantuan &amp; hubungi workshop" />
+            <Button android:id="@+id/btnDemo" style="@style/Btn.Gold" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Demo: majukan tahap pesanan aktif" />
+            <Button android:id="@+id/btnLogout" style="@style/Btn.Navy" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Keluar" />
+        </LinearLayout>
+    </ScrollView>
+    <include layout="@layout/view_bottom_nav" />
+</LinearLayout>

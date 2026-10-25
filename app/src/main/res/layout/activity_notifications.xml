@@ -1,0 +1,15 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+    <include layout="@layout/view_header" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+            <LinearLayout android:id="@+id/banner" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_navy_card" android:gravity="center_horizontal" android:orientation="vertical" android:padding="18dp" android:visibility="gone">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pengerjaan selesai!" android:textColor="@color/white" android:textSize="18sp" android:textStyle="bold" />
+                <TextView android:id="@+id/tvBannerSub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:gravity="center" android:textColor="#C9CFDE" android:textSize="12sp" />
+                <Button android:id="@+id/btnBanner" style="@style/Btn.Gold" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" />
+            </LinearLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginTop="16dp" android:text="Terbaru" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold" />
+            <LinearLayout android:id="@+id/notifList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+            <TextView android:id="@+id/tvNoNotif" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="24dp" android:text="Belum ada notifikasi." android:textColor="@color/muted" android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

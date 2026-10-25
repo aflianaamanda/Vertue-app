@@ -1,0 +1,9 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/root" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_card" android:clickable="true" android:focusable="true" android:orientation="vertical" android:padding="14dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
+        <View android:id="@+id/unread" android:layout_width="8dp" android:layout_height="8dp" android:layout_marginEnd="8dp" android:background="@drawable/dot_done" />
+        <TextView android:id="@+id/tvNTitle" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold" />
+        <ImageButton android:id="@+id/btnNMore" android:layout_width="32dp" android:layout_height="32dp" android:background="@android:color/transparent" android:contentDescription="Menu" android:src="@drawable/ic_more" />
+    </LinearLayout>
+    <TextView android:id="@+id/tvNBody" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" />
+    <TextView android:id="@+id/tvNTime" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="@color/muted" android:textSize="11sp" />
+</LinearLayout>

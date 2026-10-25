@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_notif" android:icon="@drawable/ic_bell" android:title="Notifikasi" app:showAsAction="always" />
+    <item android:id="@+id/action_profile" android:title="Profil" app:showAsAction="never" />
+    <item android:id="@+id/action_help" android:title="Bantuan" app:showAsAction="never" />
+    <item android:id="@+id/action_logout" android:title="Keluar" app:showAsAction="never" />
+</menu>

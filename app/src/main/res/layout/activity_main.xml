@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/navy" android:orientation="vertical" android:paddingBottom="24dp">
+        <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+            android:background="@color/navy" android:theme="@style/ToolbarDark" app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingStart="20dp" android:text="Halo," android:textColor="#C9CFDE" android:textSize="13sp" />
+        <TextView android:id="@+id/tvName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingStart="20dp" android:textColor="@color/white" android:textSize="24sp" android:textStyle="bold" />
+    </LinearLayout>
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+            <LinearLayout android:id="@+id/cardActive" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_card" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:letterSpacing="0.05" android:text="PESANAN BERJALAN" android:textColor="@color/muted" android:textSize="11sp" android:textStyle="bold" />
+                <TextView android:id="@+id/tvActiveTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="@color/ink" android:textSize="17sp" android:textStyle="bold" />
+                <TextView android:id="@+id/tvActiveSub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:textColor="@color/muted" android:textSize="12sp" />
+                <ProgressBar android:id="@+id/pbActive" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:layout_marginTop="12dp" android:max="100"
+                    android:progressBackgroundTint="@color/gold_soft" android:progressTint="@color/gold" />
+                <TextView android:id="@+id/tvSeeProgress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingTop="12dp" android:text="Lihat progres →" android:textColor="@color/gold" android:textSize="13sp" android:textStyle="bold" />
+            </LinearLayout>
+            <TextView android:id="@+id/cardEmpty" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_card" android:padding="16dp" android:text="Belum ada pesanan berjalan. Buat pesanan pertamamu — cukup 2 langkah." android:textColor="@color/muted" android:textSize="13sp" android:visibility="gone" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="horizontal">
+                <LinearLayout android:id="@+id/btnCreate" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginEnd="6dp" android:layout_weight="1" android:background="@drawable/bg_card" android:clickable="true" android:focusable="true" android:orientation="vertical" android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:textColor="@color/gold" android:textSize="26sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Buat pesanan" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/btnInvoice" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="6dp" android:layout_weight="1" android:background="@drawable/bg_card" android:clickable="true" android:focusable="true" android:orientation="vertical" android:padding="16dp">
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@drawable/ic_receipt" android:tint="@color/gold" android:contentDescription="Tagihan" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Tagihan" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/bg_card" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Layanan Kami" android:textColor="@color/ink" android:textSize="16sp" android:textStyle="bold" />
+                <LinearLayout android:id="@+id/serviceList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+                <TextView android:id="@+id/tvAllServices" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingTop="12dp" android:text="Lihat semua layanan →" android:textColor="@color/gold" android:textSize="13sp" android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <include layout="@layout/view_bottom_nav" />
+</LinearLayout>

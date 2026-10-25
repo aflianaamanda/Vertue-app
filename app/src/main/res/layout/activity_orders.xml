@@ -1,0 +1,13 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+    <include layout="@layout/view_header" />
+    <RadioGroup android:id="@+id/filterGroup" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="16dp">
+        <RadioButton android:id="@+id/chipAll" style="@style/Chip" android:checked="true" android:text="Semua" />
+        <RadioButton android:id="@+id/chipRun" style="@style/Chip" android:text="Berjalan" />
+        <RadioButton android:id="@+id/chipDone" style="@style/Chip" android:text="Selesai" />
+    </RadioGroup>
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <ListView android:id="@+id/listOrders" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:divider="@android:color/transparent" android:dividerHeight="0dp" android:paddingBottom="12dp" />
+        <TextView android:id="@+id/tvEmpty" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:padding="32dp" android:text="Belum ada pesanan di kategori ini." android:textColor="@color/muted" />
+    </FrameLayout>
+    <include layout="@layout/view_bottom_nav" />
+</LinearLayout>

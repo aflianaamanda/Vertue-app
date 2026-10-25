@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Vertue</string>
+    <string-array name="jam_antar">
+        <item>09.00 WIB</item>
+        <item>11.00 WIB</item>
+        <item>13.00 WIB</item>
+        <item>15.00 WIB</item>
+    </string-array>
+</resources>
