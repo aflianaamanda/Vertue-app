@@ -1,29 +1,173 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
-    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="match_parent">
-        <LinearLayout android:id="@+id/header" android:layout_width="0dp" android:layout_height="wrap_content"
-            android:background="@color/navy" android:orientation="vertical" android:padding="28dp" android:paddingTop="64dp" android:paddingBottom="36dp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="vertue" android:textColor="@color/white" android:textSize="30sp" android:textStyle="bold" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="." android:textColor="@color/gold" android:textSize="30sp" android:textStyle="bold" />
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- BAGIAN GAMBAR ATAS (Tinggi dikurangi jadi 250dp) -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_interior" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#B30D2B4B" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vtrack."
+                    android:textColor="#FFFFFF"
+                    android:textSize="34sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="INTERIOR MOBIL SPECIALIST"
+                    android:textColor="#F5B041"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Hai, welcome back!"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Masuk untuk memesan layanan dan memantau pengerjaan mobilmu."
+                    android:textColor="#CCCCCC"
+                    android:textSize="12sp" />
             </LinearLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:letterSpacing="0.08" android:text="INTERIOR MOBIL SPECIALIST" android:textColor="@color/gold" android:textSize="10sp" android:textStyle="bold" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="36dp" android:text="Selamat datang kembali" android:textColor="@color/white" android:textSize="24sp" android:textStyle="bold" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Masuk untuk memesan layanan dan memantau pengerjaan mobilmu." android:textColor="#C9CFDE" android:textSize="13sp" />
+        </FrameLayout>
+
+        <!-- BAGIAN FORM PUTIH (Ditarik ke atas pakai marginTop minus) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="-40dp"
+            android:background="@android:drawable/editbox_background_normal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="#333333"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:hint="email@gmail.com"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Kata sandi"
+                android:textColor="#333333"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:hint="••••••••"
+                android:inputType="textPassword"
+                android:paddingHorizontal="16dp" />
+
+            <TextView
+                android:id="@+id/tvForgot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="12dp"
+                android:text="Lupa kata sandi?"
+                android:textColor="#F5B041"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#0D2B4B"
+                android:text="Masuk"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
         </LinearLayout>
-        <LinearLayout android:id="@+id/card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="20dp"
-            android:background="@drawable/bg_card" android:orientation="vertical" android:padding="18dp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/header">
-            <TextView style="@style/Lbl" android:layout_marginTop="0dp" android:text="No. telepon" />
-            <EditText android:id="@+id/etPhone" style="@style/Input" android:hint="081234567890" android:importantForAutofill="no" android:inputType="phone" />
-            <TextView style="@style/Lbl" android:text="Kata sandi" />
-            <EditText android:id="@+id/etPassword" style="@style/Input" android:hint="Min. 6 karakter" android:importantForAutofill="no" android:inputType="textPassword" />
-            <CheckBox android:id="@+id/cbShow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tampilkan kata sandi" android:textSize="12sp" />
-            <TextView android:id="@+id/tvForgot" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="end" android:padding="6dp" android:text="Lupa kata sandi?" android:textColor="@color/gold" android:textSize="12sp" android:textStyle="bold" />
-            <Button android:id="@+id/btnLogin" style="@style/Btn.Navy" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Masuk" />
+
+        <!-- TEKS DAFTAR -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Belum punya akun? "
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/tvRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daftar sekarang"
+                android:textColor="#F5B041"
+                android:textStyle="bold" />
         </LinearLayout>
-        <TextView android:id="@+id/tvRegister" android:layout_width="0dp" android:layout_height="wrap_content" android:gravity="center" android:padding="24dp"
-            android:text="Belum punya akun? Daftar sekarang" android:textColor="@color/muted" android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- FOOTER -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="32dp"
+            android:gravity="center"
+            android:text="Jl. Danau Sunter Utara Blok Jl No.6, Jakarta Utara"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 </ScrollView>

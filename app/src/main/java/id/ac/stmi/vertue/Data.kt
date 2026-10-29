@@ -45,7 +45,7 @@ data class Order(
     var estimate: String = "menyusul",
     val createdAt: Long = System.currentTimeMillis(),
     val note: String = "",
-    val info: List<String> = emptyList(),
+    var info: List<String> = emptyList(),
     val carModel: String = "",
     val plate: String = "",
     val isPickup: Boolean = false,
@@ -108,7 +108,7 @@ object Repo {
         Driver("Slamet Riyadi", "6281234567895", "B 7788 JKL")
     )
 
-    val orders = mutableListOf(
+    private fun seedOrders(): MutableList<Order> = mutableListOf(
         Order(
             id = "ORD-4021", title = "Lapis Jok Kulit Full (Mobil Sedan)", total = 7_700_000, created = "10 Okt 2026",
             dpStatus = PaymentStatus.CONFIRMED, step = 5, estimate = "20 Okt 2026",
@@ -117,7 +117,7 @@ object Repo {
                 "10 Okt 2026, 09.15", "12 Okt 2026, 10.40", "13 Okt 2026, 14.00", "14 Okt 2026, 11.30",
                 "Dimulai 15 Okt 2026 · Teknisi: Eric", "Estimasi 18 Okt 2026", "Estimasi 19 Okt 2026", "Estimasi 20 Okt 2026"
             ),
-            plate = "B 1234 XYZ", isPickup = true, pickupAddress = "Pondok Indah, Jakarta Selatan", driver = drivers[0]
+            carModel = "Sedan", plate = "B 1234 XYZ", isPickup = true, pickupAddress = "Pondok Indah, Jakarta Selatan", driver = drivers[0]
         ),
         Order(id = "ORD-4024", title = "Setir Lapis Kulit", total = 950_000, created = "14 Okt 2026"),
         Order(
@@ -125,6 +125,15 @@ object Repo {
             dpStatus = PaymentStatus.CONFIRMED, finalStatus = PaymentStatus.CONFIRMED, step = 8, estimate = "02 Okt 2026"
         )
     )
+
+    val orders: MutableList<Order> = seedOrders()
+
+    /** Kembalikan data pesanan ke kondisi awal (dipakai menu Demo). */
+    fun resetDemo() {
+        orders.clear()
+        orders.addAll(seedOrders())
+        counter = 4025
+    }
 
     private var counter = 4025
     fun nextId() = "ORD-${counter++}"
@@ -155,7 +164,12 @@ object Repo {
     }
 
     fun advance(o: Order) {
-        if (o.dpPaid && o.step < 8) o.step++
+        if (o.cancelled || !o.dpPaid || o.step >= 8) return
+        o.step++
+        o.info = o.info.toMutableList().also { l ->
+            while (l.size < 8) l.add("")
+            l[o.step - 1] = "Mulai " + today()
+        }
     }
 
     private fun daysFromNow(n: Int): String =
@@ -164,15 +178,53 @@ object Repo {
 
 object Session {
     private fun p(c: Context) = c.getSharedPreferences("vertue", Context.MODE_PRIVATE)
+
     fun isLoggedIn(c: Context) = p(c).getBoolean("in", false)
-    fun login(c: Context, phone: String) = p(c).edit().putBoolean("in", true).putString("phone", phone).apply()
+
+    /** Login memakai email. Nomor HP diisi pengguna sendiri lewat menu Pengaturan. */
+    fun login(c: Context, email: String) {
+        p(c).edit().putBoolean("in", true).putString("email", email).apply()
+        uid(c)
+    }
+
     fun logout(c: Context) = p(c).edit().putBoolean("in", false).apply()
-    fun phone(c: Context): String = p(c).getString("phone", "") ?: ""
+
+    // Versi lama menyimpan email di kunci "phone"; dibaca ulang supaya data lama tidak hilang.
+    private fun legacy(c: Context): String = p(c).getString("phone", "") ?: ""
+
+    fun email(c: Context): String =
+        p(c).getString("email", null) ?: legacy(c).takeIf { "@" in it } ?: ""
+
+    fun phone(c: Context): String = legacy(c).takeIf { "@" !in it } ?: ""
+
     fun name(c: Context): String = p(c).getString("name", "Arief Muhammad") ?: "Arief Muhammad"
+
     fun address(c: Context): String = p(c).getString("address", "Pondok Indah, Jakarta Selatan") ?: ""
+
+    /** ID tetap untuk nama file foto profil, tidak ikut berubah saat email/nomor HP diganti. */
+    fun uid(c: Context): String {
+        p(c).getString("uid", null)?.let { return it }
+        val v = email(c).filter { it.isLetterOrDigit() }.ifEmpty { "default" }
+        p(c).edit().putString("uid", v).apply()
+        return v
+    }
+
+    fun saveProfile(c: Context, name: String, email: String, phone: String, address: String) {
+        uid(c) // kunci dulu sebelum email berubah
+        p(c).edit()
+            .putString("name", name)
+            .putString("email", email)
+            .putString("phone", phone)
+            .putString("address", address)
+            .apply()
+    }
+
     fun notifOn(c: Context) = p(c).getBoolean("notif", true)
     fun setNotif(c: Context, v: Boolean) = p(c).edit().putBoolean("notif", v).apply()
 }
+
+private val PHONE_REGEX = Regex("^(\\+62|62|0)8[0-9]{8,12}$")
+fun isValidPhone(s: String) = PHONE_REGEX.matches(s)
 
 fun Long.rp(): String = "Rp" + "%,d".format(Locale("id", "ID"), this)
 

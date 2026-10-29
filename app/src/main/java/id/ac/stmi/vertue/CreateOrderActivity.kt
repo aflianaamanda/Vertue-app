@@ -22,7 +22,7 @@ class CreateOrderActivity : BaseActivity() {
         setupHeader("Buat Pesanan")
 
         val etName = findViewById<EditText>(R.id.etName)
-        val etPhone = findViewById<EditText>(R.id.etPhone)
+        val etPhone = findViewById<EditText>(R.id.etEmail)
         val etAddr = findViewById<EditText>(R.id.etAddress)
         val etCar = findViewById<EditText>(R.id.etCar)
         val etPlate = findViewById<EditText>(R.id.etPlate)

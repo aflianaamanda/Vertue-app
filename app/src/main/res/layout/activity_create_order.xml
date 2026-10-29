@@ -13,7 +13,7 @@
                 <EditText android:id="@+id/etName" style="@style/Input" android:hint="Nama sesuai identitas" android:importantForAutofill="no" android:inputType="textPersonName|textCapWords" />
 
                 <TextView style="@style/Lbl" android:text="No. telepon" />
-                <EditText android:id="@+id/etPhone" style="@style/Input" android:hint="081234567890" android:importantForAutofill="no" android:inputType="phone" />
+                <EditText android:id="@+id/etEmail" style="@style/Input" android:hint="081234567890" android:importantForAutofill="no" android:inputType="phone" />
 
                 <TextView style="@style/Lbl" android:text="Alamat" />
                 <EditText android:id="@+id/etAddress" style="@style/Input" android:hint="Alamat lengkap" android:importantForAutofill="no" android:inputType="textPostalAddress|textMultiLine" android:minLines="2" />

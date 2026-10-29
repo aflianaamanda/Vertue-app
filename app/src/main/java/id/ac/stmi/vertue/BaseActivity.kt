@@ -6,6 +6,8 @@ import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -40,6 +42,23 @@ abstract class BaseActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    /**
+     * Beri jarak sebesar status bar di header (supaya tidak tertimpa) dan sebesar
+     * navigation bar / keyboard di bagian bawah area scroll.
+     */
+    protected fun applyEdgeInsets(root: View, header: View, scroll: View) {
+        val headerTop = header.paddingTop
+        val scrollBottom = scroll.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            header.setPadding(header.paddingLeft, headerTop + bars.top, header.paddingRight, header.paddingBottom)
+            scroll.setPadding(scroll.paddingLeft, scroll.paddingTop, scroll.paddingRight, scrollBottom + maxOf(bars.bottom, ime.bottom))
+            insets
+        }
+        ViewCompat.requestApplyInsets(root)
     }
 
     protected fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
