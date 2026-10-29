@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 
 class TrackingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,66 @@ class TrackingActivity : BaseActivity() {
             cardDriver.visibility = View.VISIBLE
             findViewById<TextView>(R.id.tvDriverName).text = o.driverName
             findViewById<TextView>(R.id.tvDriverPlate).text = "Plat: ${o.licensePlate}"
+            findViewById<TextView>(R.id.tvPickupAddress).text = "Lokasi Jemput: ${o.pickupAddress}"
+
+            val tvStatus = findViewById<TextView>(R.id.tvPickupStatus)
+            val tvEta = findViewById<TextView>(R.id.tvEta)
+            val btnConfirm = findViewById<Button>(R.id.btnConfirmPickup)
+            val btnMap = findViewById<Button>(R.id.btnMapDriver)
+
+            if (o.step == 1) {
+                tvStatus.text = "Driver sedang menuju lokasi Anda"
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = "Estimasi tiba: 15 menit lagi"
+                btnConfirm.visibility = View.VISIBLE
+                btnConfirm.isEnabled = true
+                btnMap.text = "Lacak Posisi"
+            } else {
+                tvStatus.text = "Mobil sedang dalam perjalanan ke workshop"
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = "Estimasi tiba di workshop: 20 menit lagi"
+                btnConfirm.visibility = View.GONE
+                btnMap.text = "Rute Workshop"
+            }
+
+            btnConfirm.setOnClickListener {
+                AlertDialog.Builder(this)
+                    .setTitle("Konfirmasi Penjemputan")
+                    .setMessage("Apakah driver sudah menjemput mobil Anda?")
+                    .setPositiveButton("Ya, Sudah") { _, _ ->
+                        o.step = 2
+                        Repo.orders.remove(o)
+                        Repo.orders.add(0, o)
+                        toast("Status diperbarui: Mobil menuju workshop")
+                        bind()
+                    }
+                    .setNegativeButton("Belum", null)
+                    .show()
+            }
+
+            btnMap.setOnClickListener {
+                if (o.step == 1) {
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_tracking_driver, null)
+                    val dialog = AlertDialog.Builder(this)
+                        .setView(dialogView)
+                        .create()
+                    dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                    dialogView.findViewById<TextView>(R.id.tvTrackingStatus).text = "Driver (${o.driverName}) sedang dalam perjalanan menuju lokasi Anda."
+                    dialogView.findViewById<Button>(R.id.btnCloseDialog).setOnClickListener { dialog.dismiss() }
+
+                    dialog.show()
+                } else {
+                    val gmmIntentUri = Uri.parse("geo:0,0?q=Vertue+Interior+Workshop")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                    mapIntent.setPackage("com.google.android.apps.maps")
+                    try {
+                        startActivity(mapIntent)
+                    } catch (e: Exception) {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q=Vertue+Interior+Workshop")))
+                    }
+                }
+            }
 
             findViewById<Button>(R.id.btnCallDriver).setOnClickListener {
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${o.driverPhone}"))
@@ -50,17 +111,6 @@ class TrackingActivity : BaseActivity() {
                     startActivity(intent)
                 } catch (e: Exception) {
                     toast("Aplikasi Telepon tidak tersedia")
-                }
-            }
-
-            findViewById<Button>(R.id.btnMapDriver).setOnClickListener {
-                val gmmIntentUri = Uri.parse("geo:0,0?q=Vertue+Interior+Workshop")
-                val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                mapIntent.setPackage("com.google.android.apps.maps")
-                try {
-                    startActivity(mapIntent)
-                } catch (e: Exception) {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q=Vertue+Interior+Workshop")))
                 }
             }
         } else {

@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Rp0"
-                    android:textColor="@color/ink"
+                    android:textColor="@color/navy"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -54,6 +54,17 @@
                     android:text="Pesanan #INV-0000"
                     android:textColor="@color/muted"
                     android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_gold_strip"
+                    android:padding="8dp"
+                    android:gravity="center"
+                    android:text="Selesaikan pembayaran dalam 24 jam"
+                    android:textColor="@color/ink"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <TextView
@@ -66,54 +77,86 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_card"
+                android:background="@color/navy"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Transfer ke Rekening BCA"
-                    android:textColor="@color/ink"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="a.n. EDI"
-                    android:textColor="@color/muted"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tvAccount"
+                <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BANK BCA"
+                        android:textColor="@color/gold"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.1" />
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        app:tint="@color/gold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_input"
-                    android:padding="16dp"
-                    android:text="8820 1234 5678"
-                    android:textColor="@color/ink"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:gravity="center" />
+                    android:text="Nomor Rekening"
+                    android:textColor="#C9CFDE"
+                    android:textSize="11sp" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Ketuk nomor rekening untuk menyalin"
-                    android:textColor="@color/muted"
-                    android:textSize="10sp"
-                    android:gravity="center" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvAccount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="8820 1234 5678"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05" />
+
+                    <Button
+                        android:id="@+id/btnCopy"
+                        style="@style/Btn.Outline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="36dp"
+                        android:text="Salin"
+                        android:textColor="@color/gold"
+                        android:backgroundTint="@android:color/transparent" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="a.n. EDI"
+                    android:textColor="#C9CFDE"
+                    android:textSize="13sp" />
             </LinearLayout>
+
+            <TextView
+                style="@style/Lbl"
+                android:layout_marginTop="24dp"
+                android:text="Bukti Transfer" />
 
             <LinearLayout
                 android:id="@+id/boxUpload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_card"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -122,18 +165,26 @@
                 <ImageView
                     android:id="@+id/ivPreview"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="200dp"
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/ivUploadIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@android:drawable/ic_menu_camera"
+                    app:tint="@color/gold" />
 
                 <TextView
                     android:id="@+id/tvUploadHint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:gravity="center"
                     android:text="Ketuk untuk upload bukti transfer&#10;(JPG/PNG maks 2MB)"
-                    android:textColor="@color/gold"
-                    android:textSize="14sp"
+                    android:textColor="@color/ink"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

@@ -25,7 +25,8 @@ data class Order(
     val driverName: String = Repo.getRandomDriver().name,
     val driverPhone: String = Repo.getRandomDriver().phone,
     val licensePlate: String = Repo.getRandomDriver().plate,
-    val isPickup: Boolean = false
+    val isPickup: Boolean = false,
+    val pickupAddress: String = ""
 ) {
     val dp: Long get() = total / 2
     val remaining: Long get() = when { paidFull -> 0L; dpPaid -> total - dp; else -> total }
@@ -72,7 +73,7 @@ object Repo {
                 "10 Okt 2026, 09.15", "12 Okt 2026, 10.40", "13 Okt 2026, 14.00", "14 Okt 2026, 11.30",
                 "Dimulai 15 Okt 2026 · Teknisi: Eric", "Estimasi 18 Okt 2026", "Estimasi 19 Okt 2026", "Estimasi 20 Okt 2026"
             ),
-            "Budi Santoso", "6281234567891", "B 9988 XYZ", true
+            "Budi Santoso", "6281234567891", "B 9988 XYZ", true, "Pondok Indah, Jakarta Selatan"
         ),
         Order("INV-4024", "Setir Lapis Kulit", 950_000, false, 1, false, false, "menyusul", "14 Okt 2026"),
         Order("INV-3998", "Karpet Mobil Custom (set)", 1_850_000, true, 8, true, true, "02 Okt 2026", "20 Sep 2026")
