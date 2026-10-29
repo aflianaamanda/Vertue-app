@@ -40,77 +40,89 @@ class TrackingActivity : BaseActivity() {
         empty.visibility = View.GONE
 
         val cardDriver = findViewById<View>(R.id.cardDriver)
-        if (o.dpPaid && !o.done && o.step <= 2 && o.isPickup) {
+        val d = o.driver
+
+        val phase = when {
+            o.status == OrderStatus.DELIVERING -> 3
+            o.isPickup && o.dpPaid && !o.cancelled && o.step <= 2 -> o.step
+            else -> 0
+        }
+
+        if (d != null && phase != 0) {
             cardDriver.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.tvDriverName).text = o.driverName
-            findViewById<TextView>(R.id.tvDriverPlate).text = "Plat: ${o.licensePlate}"
-            findViewById<TextView>(R.id.tvPickupAddress).text = "Lokasi Jemput: ${o.pickupAddress}"
+            findViewById<TextView>(R.id.tvDriverName).text = d.name
+            findViewById<TextView>(R.id.tvDriverPlate).text = "Plat: ${d.plate}"
+
+            val addrLabel = if (phase == 3) "Alamat antar: " else "Lokasi jemput: "
+            findViewById<TextView>(R.id.tvPickupAddress).text = "$addrLabel${o.pickupAddress}"
 
             val tvStatus = findViewById<TextView>(R.id.tvPickupStatus)
             val tvEta = findViewById<TextView>(R.id.tvEta)
             val btnConfirm = findViewById<Button>(R.id.btnConfirmPickup)
-            val btnMap = findViewById<Button>(R.id.btnMapDriver)
 
-            if (o.step == 1) {
+            if (phase == 1) {
                 tvStatus.text = "Driver sedang menuju lokasi Anda"
                 tvEta.visibility = View.VISIBLE
                 tvEta.text = "Estimasi tiba: 15 menit lagi"
                 btnConfirm.visibility = View.VISIBLE
-                btnConfirm.isEnabled = true
-                btnMap.text = "Lacak Posisi"
-            } else {
-                tvStatus.text = "Mobil sedang dalam perjalanan ke workshop"
+                btnConfirm.text = "Konfirmasi serah terima"
+                btnConfirm.setOnClickListener {
+                    AlertDialog.Builder(this)
+                        .setTitle("Konfirmasi Penjemputan")
+                        .setMessage("Apakah driver sudah menjemput mobil Anda?")
+                        .setPositiveButton("Ya, Sudah") { _, _ ->
+                            o.step = 2
+                            Repo.orders.remove(o)
+                            Repo.orders.add(0, o)
+                            toast("Status diperbarui: Mobil menuju workshop")
+                            bind()
+                        }
+                        .setNegativeButton("Belum", null)
+                        .show()
+                }
+            } else if (phase == 2) {
+                tvStatus.text = "Mobil dalam perjalanan ke workshop"
                 tvEta.visibility = View.VISIBLE
                 tvEta.text = "Estimasi tiba di workshop: 20 menit lagi"
                 btnConfirm.visibility = View.GONE
-                btnMap.text = "Rute Workshop"
+            } else if (phase == 3) {
+                tvStatus.text = "Driver sedang mengantar mobil Anda"
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = "Estimasi tiba di lokasi: 30 menit lagi"
+                btnConfirm.visibility = View.VISIBLE
+                btnConfirm.text = "Mobil sudah diterima"
+                btnConfirm.setOnClickListener {
+                    o.delivered = true
+                    toast("Terima kasih! Pesanan selesai.")
+                    bind()
+                }
             }
 
-            btnConfirm.setOnClickListener {
-                AlertDialog.Builder(this)
-                    .setTitle("Konfirmasi Penjemputan")
-                    .setMessage("Apakah driver sudah menjemput mobil Anda?")
-                    .setPositiveButton("Ya, Sudah") { _, _ ->
-                        o.step = 2
-                        Repo.orders.remove(o)
-                        Repo.orders.add(0, o)
-                        toast("Status diperbarui: Mobil menuju workshop")
-                        bind()
-                    }
-                    .setNegativeButton("Belum", null)
-                    .show()
+            val btnCall = findViewById<Button>(R.id.btnCallDriver)
+            btnCall.setOnClickListener {
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${d.phone}"))
+                try { startActivity(intent) } catch (e: Exception) { toast("Aplikasi Telepon tidak tersedia") }
             }
 
+            val btnMap = findViewById<Button>(R.id.btnMapDriver)
+            btnMap.text = if (phase == 3) "Lacak Pengantaran" else "Lacak Posisi"
             btnMap.setOnClickListener {
-                if (o.step == 1) {
+                if (phase == 1 || phase == 3) {
                     val dialogView = layoutInflater.inflate(R.layout.dialog_tracking_driver, null)
-                    val dialog = AlertDialog.Builder(this)
-                        .setView(dialogView)
-                        .create()
+                    val dialog = AlertDialog.Builder(this).setView(dialogView).create()
                     dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-                    dialogView.findViewById<TextView>(R.id.tvTrackingStatus).text = "Driver (${o.driverName}) sedang dalam perjalanan menuju lokasi Anda."
+                    val titleMsg = if (phase == 3) "Driver (${d.name}) sedang mengantar mobil Anda." else "Driver (${d.name}) sedang dalam perjalanan menuju lokasi Anda."
+                    dialogView.findViewById<TextView>(R.id.tvTrackingStatus).text = titleMsg
                     dialogView.findViewById<Button>(R.id.btnCloseDialog).setOnClickListener { dialog.dismiss() }
-
                     dialog.show()
                 } else {
                     val gmmIntentUri = Uri.parse("geo:0,0?q=Vertue+Interior+Workshop")
                     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                     mapIntent.setPackage("com.google.android.apps.maps")
-                    try {
-                        startActivity(mapIntent)
-                    } catch (e: Exception) {
+                    try { startActivity(mapIntent) } catch (e: Exception) {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q=Vertue+Interior+Workshop")))
                     }
-                }
-            }
-
-            findViewById<Button>(R.id.btnCallDriver).setOnClickListener {
-                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${o.driverPhone}"))
-                try {
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    toast("Aplikasi Telepon tidak tersedia")
                 }
             }
         } else {
@@ -125,20 +137,24 @@ class TrackingActivity : BaseActivity() {
         val stage = if (!o.dpPaid) 0 else if (o.done) 8 else o.step
         findViewById<TextView>(R.id.tvStage).text = "$stage / 8"
         findViewById<ProgressBar>(R.id.pbTrack).progress = stage * 100 / 8
-        findViewById<TextView>(R.id.tvHint).text = when {
-            !o.dpPaid -> "Bayar DP agar pesanan mulai diproses."
-            o.done -> "Mobil sudah siap diambil. Lunasi sisa tagihan sebelum pengambilan."
-            else -> "Tinggal ${8 - o.step} tahap lagi. Kamu akan dapat notifikasi saat mobil siap diambil."
+
+        findViewById<TextView>(R.id.tvHint).text = when (o.status) {
+            OrderStatus.WAITING_DP      -> "Bayar DP sebelum ${o.dpDeadline} agar pesanan diproses."
+            OrderStatus.VERIFYING_DP    -> "Bukti DP sedang diverifikasi petugas."
+            OrderStatus.DP_REJECTED     -> "Bukti DP ditolak. Unggah ulang bukti transfer."
+            OrderStatus.IN_PROGRESS     -> "Tinggal ${8 - o.step} tahap lagi. Kamu akan dapat notifikasi saat mobil siap."
+            OrderStatus.READY           -> "Mobil siap. Lunasi sisa tagihan sebelum pengambilan/pengantaran."
+            OrderStatus.VERIFYING_FINAL -> "Bukti pelunasan sedang diverifikasi."
+            OrderStatus.FINAL_REJECTED  -> "Bukti pelunasan ditolak. Unggah ulang bukti transfer."
+            OrderStatus.DELIVERING      -> "Mobil sedang diantar kembali ke alamat Anda."
+            OrderStatus.COMPLETED       -> "Pesanan selesai. Terima kasih!"
+            OrderStatus.CANCELLED       -> "Pesanan dibatalkan."
         }
 
         val bill = findViewById<Button>(R.id.btnBill)
-        findViewById<TextView>(R.id.tvPayInfo).text = when {
-            !o.dpPaid -> "DP belum dibayar · ${o.dp.rp()}"
-            o.paidFull -> "Lunas"
-            else -> "DP 50% lunas · sisa ${o.remaining.rp()}"
-        }
-        bill.text = if (!o.dpPaid) "Bayar DP" else "Lihat tagihan"
-        bill.setOnClickListener { go(if (!o.dpPaid) PaymentActivity::class.java else InvoiceActivity::class.java, o.id) }
+        val toPay = o.status == OrderStatus.WAITING_DP || o.status == OrderStatus.DP_REJECTED
+        bill.text = if (toPay) "Bayar DP" else "Lihat tagihan"
+        bill.setOnClickListener { go(if (toPay) PaymentActivity::class.java else InvoiceActivity::class.java, o.id) }
 
         val box = findViewById<LinearLayout>(R.id.timeline)
         box.removeAllViews()

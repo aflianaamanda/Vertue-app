@@ -12,6 +12,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 abstract class BaseActivity : AppCompatActivity() {
 
+    override fun onResume() {
+        super.onResume()
+        Repo.expireOverdue()
+    }
+
     protected fun setupHeader(title: String) {
         findViewById<TextView>(R.id.headerTitle).text = title
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
@@ -61,6 +66,24 @@ abstract class BaseActivity : AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             }
             .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    protected fun confirmCancel(o: Order, onDone: () -> Unit = {}) {
+        if (!o.canCancel) {
+            toast("Pesanan yang DP-nya sudah dibayar dibatalkan lewat workshop")
+            showHelp()
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Batalkan pesanan?")
+            .setMessage("Pesanan #${o.id} akan dibatalkan.")
+            .setPositiveButton("Batalkan") { _, _ ->
+                o.cancelled = true
+                toast("Pesanan dibatalkan")
+                onDone()
+            }
+            .setNegativeButton("Tidak", null)
             .show()
     }
 

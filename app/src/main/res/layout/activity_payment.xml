@@ -137,14 +137,6 @@
                         android:textColor="@color/gold"
                         android:backgroundTint="@android:color/transparent" />
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="a.n. EDI"
-                    android:textColor="#C9CFDE"
-                    android:textSize="13sp" />
             </LinearLayout>
 
             <TextView
