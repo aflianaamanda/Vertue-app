@@ -49,6 +49,7 @@ class TrackingActivity : BaseActivity() {
             val tvStatus = findViewById<TextView>(R.id.tvPickupStatus)
             val tvEta = findViewById<TextView>(R.id.tvEta)
             val btnConfirm = findViewById<Button>(R.id.btnConfirmPickup)
+            val btnMap = findViewById<Button>(R.id.btnMapDriver)
 
             if (o.step == 1) {
                 tvStatus.text = "Driver sedang menuju lokasi Anda"
@@ -56,11 +57,13 @@ class TrackingActivity : BaseActivity() {
                 tvEta.text = "Estimasi tiba: 15 menit lagi"
                 btnConfirm.visibility = View.VISIBLE
                 btnConfirm.isEnabled = true
+                btnMap.text = "Lacak Posisi Driver"
             } else {
                 tvStatus.text = "Mobil sedang dalam perjalanan ke workshop"
                 tvEta.visibility = View.VISIBLE
                 tvEta.text = "Estimasi tiba di workshop: 20 menit lagi"
                 btnConfirm.visibility = View.GONE
+                btnMap.text = "Lihat Rute Workshop"
             }
 
             btnConfirm.setOnClickListener {
@@ -78,23 +81,31 @@ class TrackingActivity : BaseActivity() {
                     .show()
             }
 
+            btnMap.setOnClickListener {
+                if (o.step == 1) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Live Tracking Driver")
+                        .setMessage("Driver (${o.driverName}) sedang dalam perjalanan menuju lokasi Anda.\n\nPosisi saat ini: Jl. Sudirman, 2 km dari lokasi jemput.\n\nMohon tunggu, driver akan segera tiba.")
+                        .setPositiveButton("Mengerti", null)
+                        .show()
+                } else {
+                    val gmmIntentUri = Uri.parse("geo:0,0?q=Vertue+Interior+Workshop")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                    mapIntent.setPackage("com.google.android.apps.maps")
+                    try {
+                        startActivity(mapIntent)
+                    } catch (e: Exception) {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q=Vertue+Interior+Workshop")))
+                    }
+                }
+            }
+
             findViewById<Button>(R.id.btnCallDriver).setOnClickListener {
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${o.driverPhone}"))
                 try {
                     startActivity(intent)
                 } catch (e: Exception) {
                     toast("Aplikasi Telepon tidak tersedia")
-                }
-            }
-
-            findViewById<Button>(R.id.btnMapDriver).setOnClickListener {
-                val gmmIntentUri = Uri.parse("geo:0,0?q=Vertue+Interior+Workshop")
-                val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                mapIntent.setPackage("com.google.android.apps.maps")
-                try {
-                    startActivity(mapIntent)
-                } catch (e: Exception) {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q=Vertue+Interior+Workshop")))
                 }
             }
         } else {
