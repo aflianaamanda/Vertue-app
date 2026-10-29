@@ -57,13 +57,13 @@ class TrackingActivity : BaseActivity() {
                 tvEta.text = "Estimasi tiba: 15 menit lagi"
                 btnConfirm.visibility = View.VISIBLE
                 btnConfirm.isEnabled = true
-                btnMap.text = "Lacak Posisi Driver"
+                btnMap.text = "Lacak Posisi"
             } else {
                 tvStatus.text = "Mobil sedang dalam perjalanan ke workshop"
                 tvEta.visibility = View.VISIBLE
                 tvEta.text = "Estimasi tiba di workshop: 20 menit lagi"
                 btnConfirm.visibility = View.GONE
-                btnMap.text = "Lihat Rute Workshop"
+                btnMap.text = "Rute Workshop"
             }
 
             btnConfirm.setOnClickListener {
@@ -83,11 +83,16 @@ class TrackingActivity : BaseActivity() {
 
             btnMap.setOnClickListener {
                 if (o.step == 1) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Live Tracking Driver")
-                        .setMessage("Driver (${o.driverName}) sedang dalam perjalanan menuju lokasi Anda.\n\nPosisi saat ini: Jl. Sudirman, 2 km dari lokasi jemput.\n\nMohon tunggu, driver akan segera tiba.")
-                        .setPositiveButton("Mengerti", null)
-                        .show()
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_tracking_driver, null)
+                    val dialog = AlertDialog.Builder(this)
+                        .setView(dialogView)
+                        .create()
+                    dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                    dialogView.findViewById<TextView>(R.id.tvTrackingStatus).text = "Driver (${o.driverName}) sedang dalam perjalanan menuju lokasi Anda."
+                    dialogView.findViewById<Button>(R.id.btnCloseDialog).setOnClickListener { dialog.dismiss() }
+
+                    dialog.show()
                 } else {
                     val gmmIntentUri = Uri.parse("geo:0,0?q=Vertue+Interior+Workshop")
                     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
