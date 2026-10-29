@@ -80,7 +80,7 @@ class CreateOrderActivity : BaseActivity() {
                         val extra = etNote.text.toString().trim()
                         if (extra.isNotEmpty()) append(" · ").append(extra)
                     }
-                    val o = Order(Repo.nextId(), s.name, s.price, false, 1, false, false, "menyusul", Repo.today(), note)
+                    val o = Order(Repo.nextId(), s.name, s.price, false, 1, false, false, "menyusul", Repo.today(), note, isPickup = pickup)
                     Repo.orders.add(0, o)
                     go(PaymentActivity::class.java, o.id)
                     finish()

@@ -18,6 +18,15 @@
                 <ProgressBar android:id="@+id/pbTrack" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:layout_marginTop="10dp" android:max="100" android:progressBackgroundTint="@color/gold_soft" android:progressTint="@color/gold" />
                 <TextView android:id="@+id/tvHint" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/muted" android:textSize="12sp" />
             </LinearLayout>
+            <LinearLayout android:id="@+id/cardDriver" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" android:layout_marginBottom="16dp" android:background="@drawable/bg_card" android:orientation="vertical" android:padding="16dp" android:visibility="gone">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="INFO PENJEMPUTAN MOBIL" android:textColor="@color/muted" android:textSize="10sp" android:textStyle="bold" android:letterSpacing="0.1" />
+                <TextView android:id="@+id/tvDriverName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Nama Driver" android:textColor="@color/ink" android:textSize="16sp" android:textStyle="bold" />
+                <TextView android:id="@+id/tvDriverPlate" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Plat Mobil" android:textColor="@color/red" android:textSize="13sp" android:textStyle="bold" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="horizontal">
+                    <Button android:id="@+id/btnCallDriver" style="@style/Btn.Navy" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="8dp" android:text="Telepon Driver" />
+                    <Button android:id="@+id/btnMapDriver" style="@style/Btn.Outline" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Lihat Rute" />
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginEnd="16dp" android:layout_marginStart="16dp" android:background="@drawable/bg_card" android:orientation="vertical" android:padding="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:text="Riwayat Pengerjaan" android:textColor="@color/ink" android:textSize="15sp" android:textStyle="bold" />
                 <LinearLayout android:id="@+id/timeline" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />

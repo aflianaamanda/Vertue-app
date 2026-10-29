@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-const val WORKSHOP_PHONE = "6281234567890"   // ganti dengan nomor workshop
-const val ACCOUNT_NO = "[NO. REKENING]"        // ganti dengan nomor rekening
+const val WORKSHOP_PHONE = "6281234567890"
+const val ACCOUNT_NO = "[NO. REKENING]"
 
 data class Service(val name: String, val price: Long)
 
@@ -15,13 +15,17 @@ data class Order(
     val title: String,
     val total: Long,
     var dpPaid: Boolean,
-    var step: Int,            // tahap berjalan 1..8
+    var step: Int,
     var done: Boolean,
     var paidFull: Boolean,
     val estimate: String,
     val created: String,
     val note: String = "",
-    val info: List<String> = emptyList()
+    val info: List<String> = emptyList(),
+    val driverName: String = Repo.getRandomDriver().name,
+    val driverPhone: String = Repo.getRandomDriver().phone,
+    val licensePlate: String = Repo.getRandomDriver().plate,
+    val isPickup: Boolean = false
 ) {
     val dp: Long get() = total / 2
     val remaining: Long get() = when { paidFull -> 0L; dpPaid -> total - dp; else -> total }
@@ -49,6 +53,17 @@ object Repo {
         Service("Lapis Jok Kulit Full (SUV)", 9_450_000),
         Service("Setir Lapis Kulit", 950_000)
     )
+
+    data class Driver(val name: String, val phone: String, val plate: String)
+    val drivers = listOf(
+        Driver("Budi Santoso", "6281234567891", "B 9988 XYZ"),
+        Driver("Agus Pratama", "6281234567892", "B 1122 ABC"),
+        Driver("Dedi Kurniawan", "6281234567893", "B 3344 DEF"),
+        Driver("Rizky Ramadhan", "6281234567894", "B 5566 GHI"),
+        Driver("Slamet Riyadi", "6281234567895", "B 7788 JKL")
+    )
+    fun getRandomDriver(): Driver = drivers.random()
+
     val orders = mutableListOf(
         Order(
             "INV-4021", "Lapis Jok Kulit Full (Mobil Sedan)", 7_700_000, true, 5, false, false,
@@ -56,7 +71,8 @@ object Repo {
             listOf(
                 "10 Okt 2026, 09.15", "12 Okt 2026, 10.40", "13 Okt 2026, 14.00", "14 Okt 2026, 11.30",
                 "Dimulai 15 Okt 2026 · Teknisi: Eric", "Estimasi 18 Okt 2026", "Estimasi 19 Okt 2026", "Estimasi 20 Okt 2026"
-            )
+            ),
+            "Budi Santoso", "6281234567891", "B 9988 XYZ", true
         ),
         Order("INV-4024", "Setir Lapis Kulit", 950_000, false, 1, false, false, "menyusul", "14 Okt 2026"),
         Order("INV-3998", "Karpet Mobil Custom (set)", 1_850_000, true, 8, true, true, "02 Okt 2026", "20 Sep 2026")
