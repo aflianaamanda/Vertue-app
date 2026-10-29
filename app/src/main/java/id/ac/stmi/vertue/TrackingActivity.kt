@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 
 class TrackingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,39 @@ class TrackingActivity : BaseActivity() {
             cardDriver.visibility = View.VISIBLE
             findViewById<TextView>(R.id.tvDriverName).text = o.driverName
             findViewById<TextView>(R.id.tvDriverPlate).text = "Plat: ${o.licensePlate}"
+            findViewById<TextView>(R.id.tvPickupAddress).text = "Lokasi Jemput: ${o.pickupAddress}"
+
+            val tvStatus = findViewById<TextView>(R.id.tvPickupStatus)
+            val tvEta = findViewById<TextView>(R.id.tvEta)
+            val btnConfirm = findViewById<Button>(R.id.btnConfirmPickup)
+
+            if (o.step == 1) {
+                tvStatus.text = "Driver sedang menuju lokasi Anda"
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = "Estimasi tiba: 15 menit lagi"
+                btnConfirm.visibility = View.VISIBLE
+                btnConfirm.isEnabled = true
+            } else {
+                tvStatus.text = "Mobil sedang dalam perjalanan ke workshop"
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = "Estimasi tiba di workshop: 20 menit lagi"
+                btnConfirm.visibility = View.GONE
+            }
+
+            btnConfirm.setOnClickListener {
+                AlertDialog.Builder(this)
+                    .setTitle("Konfirmasi Penjemputan")
+                    .setMessage("Apakah driver sudah menjemput mobil Anda?")
+                    .setPositiveButton("Ya, Sudah") { _, _ ->
+                        o.step = 2
+                        Repo.orders.remove(o)
+                        Repo.orders.add(0, o)
+                        toast("Status diperbarui: Mobil menuju workshop")
+                        bind()
+                    }
+                    .setNegativeButton("Belum", null)
+                    .show()
+            }
 
             findViewById<Button>(R.id.btnCallDriver).setOnClickListener {
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${o.driverPhone}"))
