@@ -1,11 +1,18 @@
 package id.ac.stmi.vertue
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.material.button.MaterialButton
 
 class InvoiceActivity : BaseActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_invoice)
@@ -13,7 +20,7 @@ class InvoiceActivity : BaseActivity() {
     }
 
     override fun onResume() {
-        super.onResume();
+        super.onResume()
         bind()
     }
 
@@ -27,6 +34,36 @@ class InvoiceActivity : BaseActivity() {
         v.text = t
         v.setBackgroundResource(bg)
         v.setTextColor(getColor(col))
+    }
+
+    /** Tombol rating: di bawah tombol bayar, hanya tampil kalau sudah lunas. */
+    private fun bindRating(o: Order, pay: View, lunas: Boolean) {
+        val parent = pay.parent as ViewGroup
+
+        // Pakai tombol yang sudah ada kalau bind() dipanggil lagi (onResume), kalau belum buat baru.
+        val btn: Button = parent.findViewWithTag<Button>("btnRating") ?: MaterialButton(
+            this, null, com.google.android.material.R.attr.materialButtonStyle
+        ).apply {
+            tag = "btnRating"
+            isAllCaps = false
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(getColor(R.color.white))
+            backgroundTintList = ColorStateList.valueOf(getColor(R.color.gold))
+            cornerRadius = dp(12)
+            minimumHeight = dp(52)
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(8) }
+            parent.addView(this, parent.indexOfChild(pay) + 1)
+        }
+
+        btn.visibility = if (lunas && o.status != OrderStatus.CANCELLED) View.VISIBLE else View.GONE
+
+        val sudahRating = getSharedPreferences("RatingPrefs", MODE_PRIVATE).contains("rating_${o.id}")
+        btn.text = if (sudahRating) "Lihat Rating & Ulasan" else "Beri Rating & Ulasan"
+
+        btn.setOnClickListener { go(activity_detail_selesai::class.java, o.id) }
     }
 
     private fun bind() {
@@ -61,11 +98,19 @@ class InvoiceActivity : BaseActivity() {
         pay.isEnabled = enabled
         pay.setOnClickListener { go(PaymentActivity::class.java, o.id) }
 
+        // Tombol rating muncul di bawah tombol bayar setelah pelunasan terkonfirmasi.
+        bindRating(o, pay, o.paidFull)
+
         findViewById<Button>(R.id.btnDownload).text = "Bagikan tagihan"
         findViewById<Button>(R.id.btnDownload).setOnClickListener {
             val text = "INVOICE #${o.id} — Vertue Interior Mobil\n${o.title} x1\nTotal: ${o.total.rp()}\n" +
                     "DP 50%: ${if (o.dpPaid) "Lunas" else "Belum"}\nSisa tagihan: ${o.remaining.rp()}"
-            startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), "Bagikan invoice"))
+            startActivity(
+                Intent.createChooser(
+                    Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text),
+                    "Bagikan invoice"
+                )
+            )
         }
     }
 }
