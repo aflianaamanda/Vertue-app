@@ -8,7 +8,7 @@
         android:theme="@style/Theme.Vertue">
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,19 +16,22 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" />
-        <activity android:name=".BaseActivity" />
+        <activity android:name=".AdminActivity" android:exported="false" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".CreateOrderActivity" />
-        <activity android:name=".InvoiceActivity" />
-        <activity android:name=".NotificationsActivity" />
-        <activity android:name=".OrdersActivity" />
         <activity android:name=".PaymentActivity" />
-        <activity android:name=".ProfileActivity" />
         <activity android:name=".TrackingActivity" />
+        <activity android:name=".OrdersActivity" />
+        <activity android:name=".InvoiceActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".NotificationsActivity" />
+        <activity
+            android:name=".ActivitySetting"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
-        <!-- HALAMAN RATING PATIA -->
+        <!-- Halaman rating (Fathia) -->
         <activity android:name=".activity_detail_selesai" />
-
     </application>
 
 </manifest>

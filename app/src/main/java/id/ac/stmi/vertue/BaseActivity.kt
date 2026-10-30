@@ -6,11 +6,18 @@ import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 abstract class BaseActivity : AppCompatActivity() {
+
+    override fun onResume() {
+        super.onResume()
+        Repo.expireOverdue()
+    }
 
     protected fun setupHeader(title: String) {
         findViewById<TextView>(R.id.headerTitle).text = title
@@ -37,6 +44,23 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Beri jarak sebesar status bar di header (supaya tidak tertimpa) dan sebesar
+     * navigation bar / keyboard di bagian bawah area scroll.
+     */
+    protected fun applyEdgeInsets(root: View, header: View, scroll: View) {
+        val headerTop = header.paddingTop
+        val scrollBottom = scroll.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            header.setPadding(header.paddingLeft, headerTop + bars.top, header.paddingRight, header.paddingBottom)
+            scroll.setPadding(scroll.paddingLeft, scroll.paddingTop, scroll.paddingRight, scrollBottom + maxOf(bars.bottom, ime.bottom))
+            insets
+        }
+        ViewCompat.requestApplyInsets(root)
+    }
+
     protected fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     protected fun toast(s: String) = Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
 
@@ -61,6 +85,24 @@ abstract class BaseActivity : AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             }
             .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    protected fun confirmCancel(o: Order, onDone: () -> Unit = {}) {
+        if (!o.canCancel) {
+            toast("Pesanan yang DP-nya sudah dibayar dibatalkan lewat workshop")
+            showHelp()
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Batalkan pesanan?")
+            .setMessage("Pesanan #${o.id} akan dibatalkan.")
+            .setPositiveButton("Batalkan") { _, _ ->
+                o.cancelled = true
+                toast("Pesanan dibatalkan")
+                onDone()
+            }
+            .setNegativeButton("Tidak", null)
             .show()
     }
 

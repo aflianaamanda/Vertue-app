@@ -34,10 +34,10 @@ class OrdersActivity : BaseActivity() {
         listView = findViewById(R.id.listOrders)
         listView.adapter = adapter
         listView.emptyView = findViewById(R.id.tvEmpty)
-        registerForContextMenu(listView)   // Context Menu: tekan & tahan item
+        registerForContextMenu(listView)
         listView.setOnItemClickListener { _, _, pos, _ ->
             val o = adapter.getItem(pos)
-            if (!o.dpPaid) go(PaymentActivity::class.java, o.id) else go(TrackingActivity::class.java, o.id)
+            if (o.canPay) go(PaymentActivity::class.java, o.id) else go(TrackingActivity::class.java, o.id)
         }
         findViewById<RadioGroup>(R.id.filterGroup).setOnCheckedChangeListener { _, id ->
             filter = when (id) { R.id.chipRun -> 1; R.id.chipDone -> 2; else -> 0 }
@@ -45,25 +45,27 @@ class OrdersActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() { super.onResume(); refresh() }
+    override fun onResume() {
+        super.onResume();
+        refresh()
+    }
 
     private fun refresh() {
         adapter.items = when (filter) {
-            1 -> Repo.orders.filter { !it.done }
-            2 -> Repo.orders.filter { it.done }
+            1 -> Repo.orders.filter { it.status != OrderStatus.COMPLETED && it.status != OrderStatus.CANCELLED }
+            2 -> Repo.orders.filter { it.status == OrderStatus.COMPLETED || it.status == OrderStatus.CANCELLED }
             else -> Repo.orders.toList()
         }
         adapter.notifyDataSetChanged()
     }
 
-    // ===== Context Menu =====
     override fun onCreateContextMenu(menu: ContextMenu, v: View, info: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, info)
         val pos = (info as AdapterView.AdapterContextMenuInfo).position
         val o = adapter.getItem(pos)
         menu.setHeaderTitle("#${o.id}")
         menuInflater.inflate(R.menu.menu_context_order, menu)
-        menu.findItem(R.id.ctx_cancel).isVisible = !o.dpPaid   // hanya boleh batal sebelum DP dibayar
+        menu.findItem(R.id.ctx_cancel).isVisible = o.canCancel
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
@@ -79,11 +81,7 @@ class OrdersActivity : BaseActivity() {
                 Intent(Intent.ACTION_SEND).setType("text/plain")
                     .putExtra(Intent.EXTRA_TEXT, "Pesanan Vertue #${o.id}\n${o.title}\nStatus: ${o.statusLabel}\nTotal: ${o.total.rp()}"),
                 "Bagikan ringkasan"))
-            R.id.ctx_cancel -> AlertDialog.Builder(this)
-                .setTitle("Batalkan pesanan?")
-                .setMessage("Pesanan #${o.id} belum dibayar dan akan dihapus.")
-                .setPositiveButton("Batalkan") { _, _ -> Repo.orders.remove(o); refresh() }
-                .setNegativeButton("Kembali", null).show()
+            R.id.ctx_cancel -> confirmCancel(o) { refresh() }
         }
         return true
     }
@@ -100,15 +98,16 @@ class OrdersActivity : BaseActivity() {
             v.findViewById<TextView>(R.id.tvId).text = "#${o.id}"
             val chip = v.findViewById<TextView>(R.id.tvStatus)
             chip.text = o.statusLabel
-            when {
-                !o.dpPaid -> { chip.setBackgroundResource(R.drawable.bg_pill_red); chip.setTextColor(getColor(R.color.red)) }
-                o.done -> { chip.setBackgroundResource(R.drawable.bg_pill_green); chip.setTextColor(getColor(R.color.green)) }
+            when (o.status) {
+                OrderStatus.CANCELLED, OrderStatus.DP_REJECTED, OrderStatus.FINAL_REJECTED -> { chip.setBackgroundResource(R.drawable.bg_pill_red); chip.setTextColor(getColor(R.color.red)) }
+                OrderStatus.COMPLETED -> { chip.setBackgroundResource(R.drawable.bg_pill_green); chip.setTextColor(getColor(R.color.green)) }
+                OrderStatus.WAITING_DP, OrderStatus.VERIFYING_DP -> { chip.setBackgroundResource(R.drawable.bg_pill_red); chip.setTextColor(getColor(R.color.red)) }
                 else -> { chip.setBackgroundResource(R.drawable.bg_pill_gold); chip.setTextColor(getColor(R.color.gold)) }
             }
             v.findViewById<TextView>(R.id.tvTitle).text = o.title
-            v.findViewById<TextView>(R.id.tvSub).text = when {
-                o.done -> "Selesai ${o.estimate}"
-                !o.dpPaid -> "Dipesan ${o.created}"
+            v.findViewById<TextView>(R.id.tvSub).text = when (o.status) {
+                OrderStatus.COMPLETED -> "Selesai ${o.estimate}"
+                OrderStatus.WAITING_DP, OrderStatus.VERIFYING_DP -> "Dipesan ${o.created}"
                 else -> "Estimasi selesai ${o.estimate}"
             }
             val pb = v.findViewById<ProgressBar>(R.id.pb)
@@ -117,14 +116,16 @@ class OrdersActivity : BaseActivity() {
             step.visibility = pb.visibility
             pb.progress = o.progress
             step.text = "Tahap ${o.step} dari 8"
+
             val pay = v.findViewById<Button>(R.id.btnPay)
-            pay.visibility = if (!o.dpPaid) View.VISIBLE else View.GONE
-            pay.text = "Bayar DP ${o.dp.rp()}"
+            pay.visibility = if (o.canPay) View.VISIBLE else View.GONE
+            pay.text = if (!o.dpPaid) "Bayar DP ${o.dp.rp()}" else "Bayar Pelunasan ${o.remaining.rp()}"
             pay.setOnClickListener { go(PaymentActivity::class.java, o.id) }
+
             val inv = v.findViewById<TextView>(R.id.tvInvoice)
-            inv.visibility = if (o.done) View.VISIBLE else View.GONE
+            inv.visibility = if (o.status == OrderStatus.COMPLETED) View.VISIBLE else View.GONE
             inv.setOnClickListener { go(InvoiceActivity::class.java, o.id) }
-            // ===== Popup Menu =====
+
             v.findViewById<ImageButton>(R.id.btnMore).setOnClickListener { anchor ->
                 PopupMenu(this@OrdersActivity, anchor).apply {
                     menuInflater.inflate(R.menu.menu_popup_order, menu)

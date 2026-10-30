@@ -6,4 +6,29 @@
         <item>13.00 WIB</item>
         <item>15.00 WIB</item>
     </string-array>
+    <string name="profile_title">Profil Saya</string>
+    <string name="profile_back_symbol">←</string>
+    <string name="profile_avatar_initial">U</string>
+    <string name="profile_photo_desc">Foto profil</string>
+    <string name="profile_edit_photo">Ubah foto profil</string>
+    <string name="profile_default_name">Pengguna</string>
+    <string name="profile_section_account">INFORMASI AKUN</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_phone">Nomor HP</string>
+    <string name="profile_address">Alamat</string>
+    <string name="profile_empty">-</string>
+    <string name="profile_section_more">LAINNYA</string>
+    <string name="profile_setting">Pengaturan</string>
+    <string name="profile_help">Bantuan</string>
+    <string name="profile_chevron">›</string>
+    <string name="profile_demo">Menu Demo: Panel Workshop</string>
+    <string name="profile_logout">Keluar Akun</string>
+    <string name="settings_title">Pengaturan Akun</string>
+    <string name="settings_subtitle">Perbarui data diri Anda. Perubahan langsung diterapkan di seluruh aplikasi.</string>
+    <string name="settings_label_name">Nama lengkap</string>
+    <string name="settings_label_email">Email</string>
+    <string name="settings_label_phone">Nomor HP</string>
+    <string name="settings_label_address">Alamat</string>
+    <string name="settings_hint_phone">081234567890</string>
+    <string name="settings_save">Simpan Perubahan</string>
 </resources>

@@ -11,18 +11,31 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/bg_card" android:orientation="vertical" android:padding="16dp">
                 <TextView style="@style/Lbl" android:layout_marginTop="0dp" android:text="Nama lengkap" />
                 <EditText android:id="@+id/etName" style="@style/Input" android:hint="Nama sesuai identitas" android:importantForAutofill="no" android:inputType="textPersonName|textCapWords" />
+
                 <TextView style="@style/Lbl" android:text="No. telepon" />
-                <EditText android:id="@+id/etPhone" style="@style/Input" android:hint="081234567890" android:importantForAutofill="no" android:inputType="phone" />
+                <EditText android:id="@+id/etEmail" style="@style/Input" android:hint="081234567890" android:importantForAutofill="no" android:inputType="phone" />
+
                 <TextView style="@style/Lbl" android:text="Alamat" />
                 <EditText android:id="@+id/etAddress" style="@style/Input" android:hint="Alamat lengkap" android:importantForAutofill="no" android:inputType="textPostalAddress|textMultiLine" android:minLines="2" />
+
+                <TextView style="@style/Lbl" android:text="Merek &amp; Tipe Mobil" />
+                <EditText android:id="@+id/etCar" style="@style/Input" android:hint="Contoh: Toyota Avanza" android:importantForAutofill="no" android:inputType="textCapWords" />
+
+                <TextView style="@style/Lbl" android:text="Plat Nomor" />
+                <EditText android:id="@+id/etPlate" style="@style/Input" android:hint="Contoh: B 1234 XYZ" android:importantForAutofill="no" android:inputType="textCapCharacters" />
+
                 <TextView style="@style/Lbl" android:text="Layanan" />
                 <RadioGroup android:id="@+id/rgService" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:orientation="vertical" />
+
                 <TextView style="@style/Lbl" android:text="Catatan (warna, material, request)" />
                 <EditText android:id="@+id/etNote" style="@style/Input" android:hint="Warna hitam, jahitan merah" android:importantForAutofill="no" android:inputType="textCapSentences|textMultiLine" android:minLines="2" />
+
                 <TextView style="@style/Lbl" android:text="Tanggal antar mobil" />
                 <EditText android:id="@+id/etDate" style="@style/Input" android:cursorVisible="false" android:focusable="false" android:hint="Pilih tanggal" android:importantForAutofill="no" android:inputType="none" />
+
                 <TextView style="@style/Lbl" android:text="Jam antar" />
                 <Spinner android:id="@+id/spTime" style="@style/Input" android:paddingEnd="8dp" android:paddingStart="8dp" />
+
                 <CheckBox android:id="@+id/cbPickup" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Minta mobil dijemput ke alamat (biaya dikonfirmasi)" android:textSize="12sp" />
                 <CheckBox android:id="@+id/cbTerms" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Saya setuju dengan syarat &amp; ketentuan" android:textSize="12sp" />
             </LinearLayout>

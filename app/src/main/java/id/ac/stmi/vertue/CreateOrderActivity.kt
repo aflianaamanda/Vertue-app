@@ -20,13 +20,19 @@ class CreateOrderActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_order)
         setupHeader("Buat Pesanan")
+
         val etName = findViewById<EditText>(R.id.etName)
-        val etPhone = findViewById<EditText>(R.id.etPhone)
+        val etPhone = findViewById<EditText>(R.id.etEmail)
         val etAddr = findViewById<EditText>(R.id.etAddress)
+        val etCar = findViewById<EditText>(R.id.etCar)
+        val etPlate = findViewById<EditText>(R.id.etPlate)
         val etNote = findViewById<EditText>(R.id.etNote)
         val etDate = findViewById<EditText>(R.id.etDate)
         val sp = findViewById<Spinner>(R.id.spTime)
-        etName.setText(Session.name(this)); etPhone.setText(Session.phone(this)); etAddr.setText(Session.address(this))
+
+        etName.setText(Session.name(this))
+        etPhone.setText(Session.phone(this))
+        etAddr.setText(Session.address(this))
         sp.adapter = ArrayAdapter.createFromResource(this, R.array.jam_antar, android.R.layout.simple_spinner_dropdown_item)
 
         rg = findViewById(R.id.rgService)
@@ -65,11 +71,16 @@ class CreateOrderActivity : BaseActivity() {
             val name = etName.text.toString().trim()
             val phone = etPhone.text.toString().trim()
             val addr = etAddr.text.toString().trim()
+            val car = etCar.text.toString().trim()
+            val plate = etPlate.text.toString().trim().uppercase()
             val s = selected()
+
             when {
                 name.length < 3 -> { etName.error = "Isi nama lengkap"; etName.requestFocus() }
                 !Regex("^(\\+62|62|0)8[0-9]{8,12}$").matches(phone) -> { etPhone.error = "Nomor telepon tidak valid"; etPhone.requestFocus() }
                 addr.isEmpty() -> { etAddr.error = "Alamat wajib diisi"; etAddr.requestFocus() }
+                car.length < 3 -> { etCar.error = "Isi merek & tipe mobil"; etCar.requestFocus() }
+                !Regex("^[A-Z]{1,2}\\s?\\d{1,4}\\s?[A-Z]{0,3}$").matches(plate) -> { etPlate.error = "Plat tidak valid, contoh: B 1234 XYZ"; etPlate.requestFocus() }
                 s == null -> toast("Pilih layanan terlebih dahulu")
                 pickedDate.isEmpty() -> toast("Pilih tanggal antar mobil")
                 !findViewById<CheckBox>(R.id.cbTerms).isChecked -> toast("Setujui syarat & ketentuan dulu")
@@ -80,7 +91,17 @@ class CreateOrderActivity : BaseActivity() {
                         val extra = etNote.text.toString().trim()
                         if (extra.isNotEmpty()) append(" · ").append(extra)
                     }
-                    val o = Order(Repo.nextId(), s.name, s.price, false, 1, false, false, "menyusul", Repo.today(), note)
+                    val o = Order(
+                        id = Repo.nextId(),
+                        title = s.name,
+                        total = s.price,
+                        created = Repo.today(),
+                        note = note,
+                        isPickup = pickup,
+                        pickupAddress = if (pickup) addr else "",
+                        carModel = car,
+                        plate = plate
+                    )
                     Repo.orders.add(0, o)
                     go(PaymentActivity::class.java, o.id)
                     finish()

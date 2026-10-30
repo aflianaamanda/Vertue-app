@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -29,6 +28,7 @@ class PaymentActivity : BaseActivity() {
                 proof = uri
                 findViewById<ImageView>(R.id.ivPreview).apply { setImageURI(uri); visibility = View.VISIBLE }
                 findViewById<View>(R.id.tvUploadHint).visibility = View.GONE
+                findViewById<View>(R.id.ivUploadIcon).visibility = View.GONE
             }
         }
     }
@@ -38,43 +38,85 @@ class PaymentActivity : BaseActivity() {
         val o = Repo.find(intent.getStringExtra("id"))
         if (o == null) { finish(); return }
         order = o
+
+        if (!o.canPay) {
+            toast("Pembayaran sedang diverifikasi atau tidak diperlukan")
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_payment)
+
         val settle = o.dpPaid
         setupHeader(if (settle) "Pelunasan" else "Pembayaran DP")
         findViewById<TextView>(R.id.tvAmountLbl).text = if (settle) "SISA PELUNASAN" else "TOTAL DP (50%)"
         findViewById<TextView>(R.id.tvAmount).text = o.payAmount.rp()
-        findViewById<TextView>(R.id.tvAmountSub).text = "Pesanan #${o.id} · ${o.title}"
+
+        val subText = "Pesanan #${o.id} · ${o.title}" + if (!settle) "\nBayar sebelum ${o.dpDeadline}" else ""
+        findViewById<TextView>(R.id.tvAmountSub).text = subText
+
         val tvAcc = findViewById<TextView>(R.id.tvAccount)
-        tvAcc.text = ACCOUNT_NO
-        tvAcc.setOnClickListener {
-            (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("rek", ACCOUNT_NO))
+        tvAcc.text = "$ACCOUNT_NO\na.n. $ACCOUNT_HOLDER"
+
+        findViewById<Button>(R.id.btnCopy).setOnClickListener {
+            (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("rek", ACCOUNT_NO.replace(" ", "")))
             toast("Nomor rekening disalin")
         }
-        val btn = findViewById<Button>(R.id.btnSend)
-        val boxBank = findViewById<View>(R.id.boxBank)
-        findViewById<RadioGroup>(R.id.rgMethod).setOnCheckedChangeListener { _, id ->
-            val bank = id == R.id.rbBank
-            boxBank.visibility = if (bank) View.VISIBLE else View.GONE
-            btn.text = if (bank) "Kirim bukti pembayaran" else "Bayar dengan QRIS / e-wallet"
+
+        tvAcc.setOnClickListener {
+            (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("rek", ACCOUNT_NO.replace(" ", "")))
+            toast("Nomor rekening disalin")
         }
+
+        val btn = findViewById<Button>(R.id.btnSend)
         findViewById<View>(R.id.boxUpload).setOnClickListener { picker.launch("image/*") }
+
         btn.setOnClickListener {
-            val bank = findViewById<RadioGroup>(R.id.rgMethod).checkedRadioButtonId == R.id.rbBank
-            if (bank && proof == null) { toast("Upload bukti transfer terlebih dahulu"); return@setOnClickListener }
-            if (bank) success("Bukti transfer terkirim. Petugas akan memverifikasi pembayaranmu.")
-            else AlertDialog.Builder(this).setTitle("Simulasi QRIS")
-                .setMessage("Demo: pembayaran ${o.payAmount.rp()} dianggap berhasil.")
-                .setPositiveButton("Bayar") { _, _ -> success("Pembayaran diterima otomatis.") }
-                .setNegativeButton("Batal", null).show()
+            if (proof == null) {
+                toast("Upload bukti transfer terlebih dahulu")
+                return@setOnClickListener
+            }
+            simulateAutoVerify()
         }
     }
 
-    private fun success(msg: String) {
-        if (!order.dpPaid) order.dpPaid = true else order.paidFull = true
-        AlertDialog.Builder(this).setTitle("Berhasil").setMessage(msg).setCancelable(false)
-            .setPositiveButton("Lihat pesanan") { _, _ ->
-                startActivity(Intent(this, OrdersActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
-                finish()
-            }.show()
+    private fun simulateAutoVerify() {
+        // Simulasi: Langsung Terkonfirmasi (Auto-Verify)
+        if (order.dpPaid) {
+            Repo.confirmPayment(order, true, true)
+        } else {
+            Repo.confirmPayment(order, false, true)
+        }
+
+        showSuccessDialog()
+    }
+
+    private fun showSuccessDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_success, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val title = dialogView.findViewById<TextView>(R.id.tvSuccessTitle)
+        val desc = dialogView.findViewById<TextView>(R.id.tvSuccessDesc)
+
+        if (order.dpPaid && order.finalStatus == PaymentStatus.CONFIRMED) {
+            title.text = "Pelunasan Berhasil!"
+            desc.text = "Pembayaran pelunasan Anda telah diverifikasi. Terima kasih telah menggunakan layanan Vertue."
+        } else {
+            title.text = "DP Berhasil Diverifikasi!"
+            desc.text = "Pembayaran DP Anda telah kami terima. Driver akan segera menghubungi Anda untuk penjemputan mobil."
+        }
+
+        dialogView.findViewById<Button>(R.id.btnSuccessOk).setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this, OrdersActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
+            finish()
+        }
+
+        dialog.show()
     }
 }

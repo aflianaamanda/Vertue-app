@@ -45,8 +45,7 @@ class MainActivity : BaseActivity() {
         findViewById<View>(R.id.cardEmpty).visibility = if (o == null) View.VISIBLE else View.GONE
         if (o != null) {
             findViewById<TextView>(R.id.tvActiveTitle).text = o.title
-            findViewById<TextView>(R.id.tvActiveSub).text =
-                "Tahap: ${Repo.shortSteps[o.step - 1]} · Estimasi ${o.estimate}"
+            findViewById<TextView>(R.id.tvActiveSub).text = "Tahap: ${o.statusLabel} · Estimasi ${o.estimate}"
             findViewById<ProgressBar>(R.id.pbActive).progress = o.progress
         }
         val list = findViewById<LinearLayout>(R.id.serviceList)
@@ -59,7 +58,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    // ===== Options Menu (materi Pertemuan 6) =====
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
