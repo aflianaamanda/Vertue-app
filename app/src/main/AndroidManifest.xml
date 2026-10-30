@@ -25,6 +25,7 @@
         <activity android:name=".OrdersActivity" />
         <activity android:name=".InvoiceActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".ServicesActivity" />   <!-- DITAMBAH -->
         <activity android:name=".NotificationsActivity" />
         <activity android:name=".activity_detail_selesai" />
         <activity

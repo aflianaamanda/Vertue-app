@@ -24,7 +24,7 @@ class MainActivity : BaseActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         setupBottomNav(R.id.nav_home)
         findViewById<View>(R.id.btnCreate).setOnClickListener { go(CreateOrderActivity::class.java) }
-        findViewById<View>(R.id.tvAllServices).setOnClickListener { go(CreateOrderActivity::class.java) }
+        findViewById<View>(R.id.tvAllServices).setOnClickListener { go(ServicesActivity::class.java) }   // <-- DIUBAH
         findViewById<View>(R.id.tvSeeProgress).setOnClickListener { go(TrackingActivity::class.java, Repo.active()?.id) }
         findViewById<View>(R.id.btnInvoice).setOnClickListener {
             val o = Repo.active() ?: Repo.orders.firstOrNull()

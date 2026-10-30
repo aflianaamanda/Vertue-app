@@ -444,14 +444,12 @@
         </FrameLayout>
     </ScrollView>
 
-    <!-- TAB BAWAH: samakan nilai app:menu dengan nama file di res/menu milikmu -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <!-- TAB BAWAH: memakai layout yang sama persis dengan semua halaman lain -->
+    <include
         android:id="@+id/bottomNav"
+        layout="@layout/view_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:elevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
